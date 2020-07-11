@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 MIN_VALUE_PROFILE_RATING = 0
 MAX_VALUE_PROFILE_RATING = 5
@@ -24,9 +24,10 @@ QUERMI_LANG = [
 ]
 
 
-# Should replace the default User model or mantain profile information in another model?
+# Should replace the default User model 
+# or mantain profile information in another model?
 class QuermiProfileUser(models.Model):
-    user = User
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=S_MAX_LENGTH)
     rate = models.IntegerField(
         default=0,
