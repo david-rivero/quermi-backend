@@ -23,7 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's3cr3t _ key' # os.getenv('SECRET_KEY')
 DEBUG = True # os.getenv('ENV_MODE') == 'debug'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'quermi-services.herokuapp.com'
+]
 
 
 # Application definition
