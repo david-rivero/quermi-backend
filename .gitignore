@@ -3,3 +3,4 @@ __pycache__
 *.sqlite3
 *.env
 NOTES.md
+quermi_project/static
