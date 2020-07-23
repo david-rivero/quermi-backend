@@ -1,1 +1,1 @@
-web: gunicorn quermi_project.quermi_project.wsgi
+web: cd quermi_project && gunicorn quermi_project.wsgi
