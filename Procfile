@@ -1,0 +1,1 @@
+web: gunicorn quermi_project.quermi_project.wsgi
