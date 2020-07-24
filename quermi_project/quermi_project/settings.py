@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,11 +90,19 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+default_db_config = {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'quermi_db',
+    'USER': 'postgres',
+    'PASSWORD': 'admin1234',
+    'HOST': 'localhost',
+    'PORT': '5432'
+}
+if 'DATABASE_URL' in os.environ:
+    default_db_config = dj_database_url.config()
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': default_db_config
 }
 
 
