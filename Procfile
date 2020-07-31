@@ -1,2 +1,2 @@
-release: cd quermi_project && echo yes | python manage.py flush && python manage.py migrate && python manage.py loaddata dummy.json && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@myproject.com', 'password')" | python manage.py shell
+release: cd quermi_project && echo yes | python manage.py flush && python manage.py makemigrations && python manage.py migrate && python manage.py loaddata dummy.json && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@myproject.com', 'password')" | python manage.py shell
 web: cd quermi_project && gunicorn quermi_project.wsgi
