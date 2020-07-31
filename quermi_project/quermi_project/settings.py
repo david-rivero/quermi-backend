@@ -90,6 +90,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# Replace hardcoded DB config data
 default_db_config = {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': 'quermi_db',
