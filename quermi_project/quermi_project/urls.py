@@ -21,12 +21,25 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from users.views import ProfileView
+from users.views import (
+    ProfileView, UserView, ProfileLanguageView, ProfileServicesView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^api-auth/', include('rest_framework.urls')),
-    path('api/login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/profile', ProfileView.as_view(), name='profile')
+    path(
+        'api/login',
+        TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path(
+        'api/token/refresh/',
+         TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/profile', ProfileView.as_view(), name='profile'),
+    path('api/user', UserView.as_view(), name='user'),
+    path(
+        'api/name/languages/',
+        ProfileLanguageView.as_view(), name='languages'),
+    path(
+        'api/name/services/',
+        ProfileServicesView.as_view(), name='services')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
