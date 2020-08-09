@@ -16,6 +16,14 @@ class ProfileServicesSerializer(serializers.ModelSerializer):
 
 
 class QuermiProfileSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return '{first_name} {last_name}'.format(
+            first_name=obj.user.first_name,
+            last_name=obj.user.last_name
+        )
+
     class Meta:
         model = QuermiProfileUser
         fields = '__all__'
