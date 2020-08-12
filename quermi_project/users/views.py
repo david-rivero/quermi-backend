@@ -27,7 +27,6 @@ class ProfileView(ListCreateAPIView):
 
 
 class ProfileDetailView(RetrieveUpdateDestroyAPIView):
-    # queryset?
     serializer_class = QuermiProfileUser
 
     def get_queryset(self):

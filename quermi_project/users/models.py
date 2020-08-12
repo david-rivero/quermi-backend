@@ -7,7 +7,7 @@ MIN_VALUE_PROFILE_RATING = 0
 MAX_VALUE_PROFILE_RATING = 5
 S_MAX_LENGTH = 30
 M_MAX_LENGTH = 50
-L_MAX_LENGTH = 120
+L_MAX_LENGTH = 255
 QUERMI_ROLE = [
     ('PATIENT', 'Patient'),
     ('CARE_PROVIDER', 'Care Provider')
@@ -64,3 +64,10 @@ class QuermiProfileUser(models.Model):
     services = models.ManyToManyField(ProfileServices)
     experience = models.CharField(max_length=L_MAX_LENGTH)
     address = models.CharField(max_length=M_MAX_LENGTH, null=True)
+
+    def __str__(self):
+        return 'Profile {st_name} {last_name} - pk: {pk}'.format(
+            st_name=self.user.first_name,
+            last_name=self.user.last_name,
+            pk=self.pk
+        )

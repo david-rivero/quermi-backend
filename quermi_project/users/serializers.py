@@ -24,6 +24,12 @@ class QuermiProfileSerializer(serializers.ModelSerializer):
             last_name=obj.user.last_name
         )
 
+    def get_available_time(self, obj):
+        return '{from_hour} - {to_hour}'.format(
+            from_hour=obj.available_hour_from.strftime('%H:%M'),
+            to_hour=obj.available_hour_to.strftime('%H:%M')
+        )
+
     class Meta:
         model = QuermiProfileUser
         fields = '__all__'
