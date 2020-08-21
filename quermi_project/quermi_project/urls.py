@@ -22,7 +22,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from users.views import (
-    ProfileView, UserView, ProfileLanguageView, ProfileServicesView
+    ProfileView, UserView, ProfileLanguageView,
+    ProfileServicesView, ProfileDetailView
 )
 
 urlpatterns = [
@@ -34,8 +35,10 @@ urlpatterns = [
     path(
         'api/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/profile', ProfileView.as_view(), name='profile'),
-    path('api/user', UserView.as_view(), name='user'),
+    re_path(r'^api/profiles', ProfileView.as_view(), name='profiles'),
+    path('api/profiles/<int:pk>/',
+        ProfileDetailView.as_view(), name='profile_detail'),
+    path('api/users', UserView.as_view(), name='users'),
     path(
         'api/name/languages/',
         ProfileLanguageView.as_view(), name='languages'),
