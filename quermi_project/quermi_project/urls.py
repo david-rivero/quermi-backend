@@ -35,8 +35,8 @@ urlpatterns = [
     path(
         'api/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/profiles', ProfileView.as_view(), name='profiles'),
-    path('api/profiles/<int:pk>',
+    re_path(r'^api/profiles', ProfileView.as_view(), name='profiles'),
+    path('api/profiles/<int:pk>/',
         ProfileDetailView.as_view(), name='profile_detail'),
     path('api/users', UserView.as_view(), name='users'),
     path(

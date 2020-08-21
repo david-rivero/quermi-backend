@@ -17,6 +17,7 @@ class ProfileServicesSerializer(serializers.ModelSerializer):
 
 class QuermiProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    available_time = serializers.SerializerMethodField()
 
     def get_name(self, obj):
         return '{first_name} {last_name}'.format(
@@ -49,4 +50,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'password',)
+        fields = ('id', 'email', 'password', 'first_name', 'last_name')

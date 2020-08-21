@@ -7,6 +7,7 @@ MIN_VALUE_PROFILE_RATING = 0
 MAX_VALUE_PROFILE_RATING = 5
 S_MAX_LENGTH = 30
 M_MAX_LENGTH = 50
+ML_MAX_LENGTH = 100
 L_MAX_LENGTH = 255
 QUERMI_ROLE = [
     ('PATIENT', 'Patient'),
@@ -56,6 +57,10 @@ class QuermiProfileUser(models.Model):
             MaxValueValidator(MAX_VALUE_PROFILE_RATING)
         ]
     )
+    profile_photo_url = models.TextField(
+        max_length=ML_MAX_LENGTH, null=True)
+    doc_id_photo_url = models.TextField(
+        max_length=ML_MAX_LENGTH, null=True)
     profile_description = models.TextField(max_length=L_MAX_LENGTH)
     birth_date = models.DateTimeField()
     available_hour_from = models.TimeField()
