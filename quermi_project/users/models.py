@@ -69,6 +69,7 @@ class QuermiProfileUser(models.Model):
     services = models.ManyToManyField(ProfileServices)
     experience = models.CharField(max_length=L_MAX_LENGTH)
     address = models.CharField(max_length=M_MAX_LENGTH, null=True)
+    profile_status = models.JSONField(max_length=ML_MAX_LENGTH, default=dict)
 
     def __str__(self):
         return 'Profile {st_name} {last_name} - pk: {pk}'.format(
