@@ -2,8 +2,10 @@ import base64
 import os
 import random
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import (
-    ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView)
+    ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView,
+    GenericAPIView)
 from rest_framework.parsers import MultiPartParser
 from django.contrib.auth.models import User
 
@@ -20,6 +22,16 @@ TMP_DOC_ID_PHOTO_PATH = '/tmp/doc_id.jpg'
 TMP_PROFILE_PHOTO_PATH = '/tmp/profile_ph.jpg'
 CREATED_STATUS_CODE = 201
 MAX_NUM_LIM = 1000000000
+
+
+class TokenPairByEmailUser(TokenObtainPairView):
+    def get_serializer(self, *args, **kwargs):
+        if kwargs.get('data') and kwargs['data'].get('email'):
+            email = kwargs['data']['email'] or ''
+            user = User.objects.filter(email=email)
+            if user.count():
+                kwargs['data']['username'] = user.first().username
+        return super().get_serializer(*args, **kwargs)
 
 class ProfileLanguageView(ListAPIView):
     queryset = ProfileLanguage.objects.all()
