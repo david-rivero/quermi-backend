@@ -20,6 +20,9 @@ from django.urls import path, include, re_path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+from services.views import (
+    ContractListView,
+)
 from users.views import (
     ProfileView, UserView, ProfileLanguageView,
     ProfileServicesView, ProfileDetailView,
@@ -35,6 +38,7 @@ urlpatterns = [
     path(
         'api/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
+    re_path(r'^api/contracts', ContractListView.as_view(), name='contracts'),
     re_path(r'^api/profiles', ProfileView.as_view(), name='profiles'),
     path('api/profiles/<int:pk>/',
         ProfileDetailView.as_view(), name='profile_detail'),

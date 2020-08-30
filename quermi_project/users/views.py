@@ -2,6 +2,7 @@ import base64
 import os
 import random
 
+from django_filters import rest_framework as filters
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import (
     ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView,
@@ -33,6 +34,7 @@ class TokenPairByEmailUser(TokenObtainPairView):
                 kwargs['data']['username'] = user.first().username
         return super().get_serializer(*args, **kwargs)
 
+
 class ProfileLanguageView(ListAPIView):
     queryset = ProfileLanguage.objects.all()
     serializer_class = ProfileLanguageSerializer
@@ -46,12 +48,8 @@ class ProfileServicesView(ListAPIView):
 class ProfileView(ListCreateAPIView):
     queryset = QuermiProfileUser.objects.all()
     serializer_class = QuermiProfileSerializer
-
-    def get(self, request, *args, **kwargs):
-        username = request.query_params.get('username') or None
-        if username:
-            self.queryset = self.queryset.filter(user__username=username)
-        return self.list(request, *args, **kwargs)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ['user__email', 'role']
 
     def post(self, request, *args, **kwargs):
         id_doc_b64 = request.data.pop('id_doc_photo')
