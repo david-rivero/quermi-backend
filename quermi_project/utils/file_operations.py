@@ -44,6 +44,10 @@ def upload_file(binary_file, file_name, folder_name=''):
     # create_shared_link
     return result.get_shared_link_download_url() or ''
 
+def remove_object(box_object):
+    if box_object:
+        box_object.delete()
+
 def remove_file(filename, folder_name=MEDIA_FOLDER_NAME):
     """
         Remove file and folder related
@@ -60,3 +64,9 @@ def remove_file(filename, folder_name=MEDIA_FOLDER_NAME):
     
     if current_folder is not MEDIA_FOLDER_NAME:
         current_folder.delete()
+
+def find_object_from_media(query_name=''):
+    query = client.search().query(query=query_name)
+    for result in query:
+        if result.name.find(query_name) is not -1:
+            return result

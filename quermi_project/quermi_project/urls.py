@@ -18,12 +18,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
+)
+from services.views import (
+    ContractListView,
 )
 from users.views import (
     ProfileView, UserView, ProfileLanguageView,
-    ProfileServicesView, ProfileDetailView
+    ProfileServicesView, ProfileDetailView,
+    TokenPairByEmailUser
 )
 
 urlpatterns = [
@@ -31,10 +34,11 @@ urlpatterns = [
     re_path(r'^api-auth/', include('rest_framework.urls')),
     path(
         'api/login',
-        TokenObtainPairView.as_view(), name='token_obtain_pair'),
+        TokenPairByEmailUser.as_view(), name='token_obtain_pair'),
     path(
         'api/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
+    re_path(r'^api/contracts', ContractListView.as_view(), name='contracts'),
     re_path(r'^api/profiles', ProfileView.as_view(), name='profiles'),
     path('api/profiles/<int:pk>/',
         ProfileDetailView.as_view(), name='profile_detail'),
