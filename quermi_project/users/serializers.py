@@ -18,6 +18,8 @@ class ProfileServicesSerializer(serializers.ModelSerializer):
 class QuermiProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     available_time = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
+    rate = serializers.SerializerMethodField()
 
     def get_name(self, obj):
         return '{first_name} {last_name}'.format(
@@ -25,11 +27,17 @@ class QuermiProfileSerializer(serializers.ModelSerializer):
             last_name=obj.user.last_name
         )
 
+    def get_username(self, obj):
+        return obj.user.username
+
     def get_available_time(self, obj):
         return '{from_hour} - {to_hour}'.format(
             from_hour=obj.available_hour_from.strftime('%H:%M'),
             to_hour=obj.available_hour_to.strftime('%H:%M')
         )
+
+    def get_rate(self, obj):
+        return obj.rate
 
     class Meta:
         model = QuermiProfileUser

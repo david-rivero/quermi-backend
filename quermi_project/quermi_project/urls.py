@@ -43,9 +43,9 @@ urlpatterns = [
     path('api/contracts/create',
         ContractCreateView.as_view(), name='contracts_create'),
     re_path(r'^api/contracts', ContractListView.as_view(), name='contracts'),
-    re_path(r'^api/profiles', ProfileView.as_view(), name='profiles'),
-    path('api/profiles/<int:pk>/',
+    path('api/profiles/profile/<int:pk>/',
         ProfileDetailView.as_view(), name='profile_detail'),
+    re_path(r'^api/profiles/$', ProfileView.as_view(), name='profiles'),
     path('api/reports', ReportListCreateView.as_view(), name='reports'),
     path('api/users', UserView.as_view(), name='users'),
     path(
@@ -53,5 +53,5 @@ urlpatterns = [
         ProfileLanguageView.as_view(), name='languages'),
     path(
         'api/name/services/',
-        ProfileServicesView.as_view(), name='services')
+        ProfileServicesView.as_view(), name='services'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

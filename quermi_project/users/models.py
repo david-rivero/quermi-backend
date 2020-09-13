@@ -9,6 +9,7 @@ S_MAX_LENGTH = 30
 M_MAX_LENGTH = 50
 ML_MAX_LENGTH = 100
 L_MAX_LENGTH = 255
+XXL_MAX_LENGTH = 1024
 QUERMI_ROLE = [
     ('PATIENT', 'Patient'),
     ('CARE_PROVIDER', 'Care Provider')
@@ -50,15 +51,8 @@ class ProfileLanguage(models.Model):
 class QuermiProfileUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.TextField(max_length=S_MAX_LENGTH, choices=QUERMI_ROLE)
-    rate = models.IntegerField(
-        default=0,
-        validators=[
-            MinValueValidator(MIN_VALUE_PROFILE_RATING),
-            MaxValueValidator(MAX_VALUE_PROFILE_RATING)
-        ]
-    )
     profile_photo_url = models.TextField(
-        max_length=ML_MAX_LENGTH, null=True)
+        max_length=XXL_MAX_LENGTH, null=True)
     doc_id_photo_url = models.TextField(
         max_length=ML_MAX_LENGTH, null=True)
     profile_description = models.TextField(max_length=L_MAX_LENGTH)
@@ -77,3 +71,15 @@ class QuermiProfileUser(models.Model):
             last_name=self.user.last_name,
             pk=self.pk
         )
+
+    @property
+    def rate(self):
+        rate_base = 5
+        amount = 0
+        for row in self.profile_rated.iterator():
+            amount += row.rate
+
+        if not amount:
+            return rate_base
+
+        return int(amount / self.profile_rated.count())
