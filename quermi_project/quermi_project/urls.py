@@ -24,12 +24,14 @@ from services.views import (
     ContractListView,
     ContractCreateView,
     ReportListCreateView,
+    ChatRoomView
 )
 from users.views import (
     ProfileView, UserView, ProfileLanguageView,
     ProfileServicesView, ProfileDetailView,
     TokenPairByEmailUser
 )
+from utils.messaging import ChatConsumer
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,4 +56,6 @@ urlpatterns = [
     path(
         'api/name/services/',
         ProfileServicesView.as_view(), name='services'),
+    path('api/chatroom/<str:from_profile>/<str:to_profile>/',
+         ChatRoomView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

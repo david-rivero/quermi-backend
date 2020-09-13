@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'channels',
+    'channels_redis',
     'users',
     'services',
     'utils'
@@ -77,6 +79,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'quermi_project.wsgi.application'
+
+# Channels
+ASGI_APPLICATION = 'utils.messaging.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT'))],
+        },
+    },
+}
 
 # REST Framework
 REST_FRAMEWORK = {
