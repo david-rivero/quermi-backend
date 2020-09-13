@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from services.models import Contract
+from services.models import Contract, Report
 from users.serializers import QuermiProfileSerializer
 from users.models import QuermiProfileUser
 
@@ -8,11 +8,11 @@ class ContractReadOnlySerializer(serializers.ModelSerializer):
     care_person = serializers.SerializerMethodField()
 
     def get_patient(self, obj):
-        q = QuermiProfileUser.objects.get(user=obj.patient)
+        q = QuermiProfileUser.objects.get(user=obj.patient.user)
         return QuermiProfileSerializer(q).data
 
     def get_care_person(self, obj):
-        q = QuermiProfileUser.objects.get(user=obj.care_person)
+        q = QuermiProfileUser.objects.get(user=obj.care_person.user)
         return QuermiProfileSerializer(q).data
 
     class Meta:
@@ -24,3 +24,15 @@ class ContractReadOnlySerializer(serializers.ModelSerializer):
             'patient',
             'care_person'
         ]
+
+
+class ContractWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = '__all__'
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = '__all__'
