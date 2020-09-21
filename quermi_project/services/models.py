@@ -24,6 +24,12 @@ class Contract(models.Model):
     end_date = models.DateTimeField(null=True)
     status = models.TextField(choices=CONTRACT_STATUS)
 
+    def __str__(self):
+        return 'contract - {from_p} - {to_p}'.format(
+            from_p=self.care_person,
+            to_p=self.patient
+        )
+
 
 class Report(models.Model):
     date = models.DateTimeField(auto_now=True)
