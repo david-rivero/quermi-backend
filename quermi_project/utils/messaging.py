@@ -8,7 +8,7 @@ import os
 import random
 
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 
@@ -21,9 +21,24 @@ MIN_NUMBER = 22391
 LIMIT_MESSAGES = 50
 r = redis.Redis(
     charset='utf-8', decode_responses=True)
-
+automatic_response = {
+    'Hi': 'Hello',
+    'How are you': 'I\'m fine, thanks',
+    'Are you available': 'Yes, I\'m available that day',
+    'Bye': 'bye',
+    '__default__': 'Sorry, I cannot understand your message.'
+}
 
 class DumbMessageModel:
+    @staticmethod
+    def get_automatic_response(message):
+        resp_keys = list(automatic_response.keys())
+        for k in resp_keys:
+            if message.lower().find(k.lower()) != -1:
+                return automatic_response[k]
+        return automatic_response['__default__']
+
+
     @staticmethod
     def init_chat(from_profile, to_profile):
         if not r.get('chat_{}_{}'.format(from_profile, to_profile)):
@@ -60,45 +75,62 @@ class DumbMessageModel:
 
         for key in total_keys:
             message = r.get(key)
-            last_messages.append(message)
+            formatted_key = key.replace(
+                'chat_', '').replace('message_', '')
+            from_prof, to_prof, ts_ms = formatted_key.split('_')
+            last_messages.append({
+                'message': message,
+                'from_profile': from_prof,
+                'to_profile': to_prof,
+                'ts_message': ts_ms
+            })
             if len(last_messages) == LIMIT_MESSAGES:
                 return last_messages
 
         return last_messages
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
-    async def fetch_messages(self, _):
+class ChatConsumer(WebsocketConsumer):
+    def fetch_messages(self, _):
         last_messages = DumbMessageModel.retrieve_last_messages_from_profile(
             self.from_profile, self.to_profile)
         for message in last_messages:
-            await self.send_message(message)
+            self.send_message(message)
 
-    async def connect(self):
+    def connect(self):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = 'chat_{}'.format(self.room_id)
         self.from_profile = self.scope['url_route']['kwargs']['from']
         self.to_profile = self.scope['url_route']['kwargs']['to']
-        await self.channel_layer.group_add(
+        async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-        await self.accept()
+        self.accept()
 
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name
         )
 
-    async def receive(self, text_data):
+    def receive(self, text_data):
+        self.commands = {
+            'fetch_messages': self.fetch_messages,
+            'new_message': self.new_message
+        }
         data = json.loads(text_data)
-        self.commands[data['command']](self, data.get('message') or None)
+        self.commands[data['command']](data.get('message') or None)
 
-    async def new_message(self, message):
+    def new_message(self, message):
         DumbMessageModel.save_message(
             message, self.from_profile, self.to_profile)
-        self.send_chat_message(message)
+
+        # TODO: Update automatic response behavior
+        response_message = DumbMessageModel.get_automatic_response(message)
+        self.send_chat_message(response_message)
+        DumbMessageModel.save_message(
+            response_message, self.to_profile, self.from_profile)
 
     # Receive message from room group
     def send_message(self, message):
@@ -111,15 +143,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                'type': 'chat_message',
+                'type': 'send_message',
                 'message': message
             }
         )
 
-    commands = {
-        'fetch_messages': fetch_messages,
-        'new_message': new_message
-    }
 
 websocket_urlpatterns = [
     url(r'ws/chat/(?P<room_id>.*)/(?P<from>\w+)/(?P<to>\w+)/$',
