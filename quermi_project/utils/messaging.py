@@ -19,7 +19,15 @@ import redis
 MAX_NUMBER = 230102913
 MIN_NUMBER = 22391
 LIMIT_MESSAGES = 50
+REDIS_HEROKU_HOST = (
+    'redis://rediscloud:FcJ9dIyeX5rf3nscUt1DAl7wFRqbKcxQ@redis-10750.c8.'
+    'us-east-1-2.ec2.cloud.redislabs.com'
+)
+REDIS_HEROKU_PORT = 10750
+REDIS_HEROKU_DB = 0
+
 r = redis.Redis(
+    host=REDIS_HEROKU_HOST, port=REDIS_HEROKU_PORT, db=REDIS_HEROKU_DB,
     charset='utf-8', decode_responses=True)
 automatic_response = {
     'Hi': 'Hello',

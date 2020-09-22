@@ -92,14 +92,6 @@ CHANNEL_LAYERS = {
 }
 
 
-CACHES = {
-    'default': {
-         'BACKEND': 'redis_cache.RedisCache',
-         'LOCATION': 'redis://localhost:6379',
-    }
-}
-
-
 # REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
