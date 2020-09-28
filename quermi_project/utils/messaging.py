@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 import os
 import random
+from urllib import parse
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -19,16 +20,16 @@ import redis
 MAX_NUMBER = 230102913
 MIN_NUMBER = 22391
 LIMIT_MESSAGES = 50
-REDIS_HEROKU_HOST = (
+REDIS_HEROKU_URI = (
     'redis://rediscloud:FcJ9dIyeX5rf3nscUt1DAl7wFRqbKcxQ@redis-10750.c8.'
-    'us-east-1-2.ec2.cloud.redislabs.com'
+    'us-east-1-2.ec2.cloud.redislabs.com:10750'
 )
-REDIS_HEROKU_PORT = 10750
 REDIS_HEROKU_DB = 0
-
+parse.uses_netloc.append('redis') 
+url = parse.urlparse(REDIS_HEROKU_URI) 
 r = redis.Redis(
-    host=REDIS_HEROKU_HOST, port=REDIS_HEROKU_PORT, db=REDIS_HEROKU_DB,
-    charset='utf-8', decode_responses=True)
+    host=url.hostname, port=url.port, db=REDIS_HEROKU_DB,
+    password=url.password, charset='utf-8', decode_responses=True)
 automatic_response = {
     'Hi': 'Hello',
     'How are you': 'I\'m fine, thanks',
