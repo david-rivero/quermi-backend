@@ -26,10 +26,11 @@ REDIS_HEROKU_URI = (
 )
 REDIS_HEROKU_DB = 0
 parse.uses_netloc.append('redis') 
-url = parse.urlparse(REDIS_HEROKU_URI) 
+redis_url = parse.urlparse(REDIS_HEROKU_URI) 
 r = redis.Redis(
-    host=url.hostname, port=url.port, db=REDIS_HEROKU_DB,
-    password=url.password, charset='utf-8', decode_responses=True)
+    host=redis_url.hostname, port=redis_url.port, db=REDIS_HEROKU_DB,
+    password=redis_url.password, charset='utf-8', decode_responses=True)
+
 automatic_response = {
     'Hi': 'Hello',
     'How are you': 'I\'m fine, thanks',
