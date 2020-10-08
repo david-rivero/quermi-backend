@@ -1,8 +1,10 @@
 from django_filters import rest_framework as filters
 from rest_framework.generics import (
     ListAPIView, ListCreateAPIView, CreateAPIView)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
 
 from django.contrib.auth.models import User
 
@@ -12,6 +14,8 @@ from services.serializers import (
 from utils.messaging import DumbMessageModel
 
 class ContractListView(ListAPIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
     queryset = Contract.objects.all()
     serializer_class = ContractReadOnlySerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -20,18 +24,22 @@ class ContractListView(ListAPIView):
         'care_person__user__username',
     ]
 
-
 class ContractCreateView(CreateAPIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
     queryset = Contract.objects.all()
     serializer_class = ContractWriteSerializer
 
-
 class ReportListCreateView(ListCreateAPIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
 
-
 class ChatRoomView(APIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
+
     def get(self, request, from_profile='', to_profile=''):
         from_user = User.objects.get(username=from_profile)
         to_user = User.objects.get(username=to_profile)
