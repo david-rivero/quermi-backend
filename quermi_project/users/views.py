@@ -3,11 +3,13 @@ import os
 import random
 
 from django_filters import rest_framework as filters
+from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import (
     ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView,
     GenericAPIView)
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 
 from .models import QuermiProfileUser, ProfileServices, ProfileLanguage
@@ -90,6 +92,8 @@ class ProfileView(ListCreateAPIView):
         return response_create
 
 class ProfileDetailView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
     serializer_class = QuermiProfileSerializer
     
     def get_queryset(self):
