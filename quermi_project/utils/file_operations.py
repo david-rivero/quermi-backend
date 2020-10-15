@@ -3,9 +3,9 @@ from io import BytesIO
 from boxsdk import Client, JWTAuth, OAuth2
 
 
-CREDENTIALS_FILE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-    'credentials_box_config.json'
+CREDENTIALS_FILE_PATH = OAuth2(
+    client_id=os.getenv('BOX_CLIENT_ID'),
+    client_secret=os.getenv('BOX_CLIENT_SECRET')
 )
 MEDIA_FOLDER_NAME = 'quermi-media'
 
