@@ -97,7 +97,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # CORS information
@@ -107,15 +108,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-# Replace hardcoded DB config data
 default_db_config = {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': 'quermi_db',
-    'USER': 'postgres',
-    'PASSWORD': 'admin1234',
-    'HOST': 'localhost',
-    'PORT': '5432'
+    'USER': os.getenv('POSTGRES_DB_USER'),
+    'PASSWORD': os.getenv('POSTGRES_DB_PASS'),
+    'HOST': os.getenv('POSTGRES_DB_HOST'),
+    'PORT': os.getenv('POSTGRES_DB_PORT')
 }
 if 'DATABASE_URL' in os.environ:
     default_db_config = dj_database_url.config()
