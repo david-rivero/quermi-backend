@@ -20,7 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# Setup SECRET_KEY and DEBUG only for local and Heroku deploy
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('ENV_MODE') == 'debug'
 

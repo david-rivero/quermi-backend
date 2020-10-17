@@ -20,10 +20,7 @@ import redis
 MAX_NUMBER = 230102913
 MIN_NUMBER = 22391
 LIMIT_MESSAGES = 50
-REDIS_HEROKU_URI = (
-    'redis://rediscloud:FcJ9dIyeX5rf3nscUt1DAl7wFRqbKcxQ@redis-10750.c8.'
-    'us-east-1-2.ec2.cloud.redislabs.com:10750'
-)
+REDIS_HEROKU_URI = os.getenv('REDISCLOUD_URL')
 REDIS_HEROKU_DB = 0
 parse.uses_netloc.append('redis') 
 redis_url = parse.urlparse(REDIS_HEROKU_URI) 
