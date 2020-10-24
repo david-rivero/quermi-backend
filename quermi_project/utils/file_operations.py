@@ -1,11 +1,19 @@
+import json
 import os
 from io import BytesIO
-from boxsdk import Client, OAuth2
+from boxsdk import Client, JWTAuth
 
-
-CREDENTIALS_FILE_PATH = OAuth2(
+PRIVATE_KEY = os.getenv('BOX_PRIVATE_KEY') \
+    .replace(':', ' ') \
+    .replace('#', '=') \
+    .encode().decode('unicode_escape')
+CREDENTIALS_FILE_PATH = JWTAuth(
     client_id=os.getenv('BOX_CLIENT_ID'),
-    client_secret=os.getenv('BOX_CLIENT_SECRET')
+    client_secret=os.getenv('BOX_CLIENT_SECRET'),
+    enterprise_id=os.getenv('BOX_ENTERPRISE_ID'),
+    jwt_key_id=os.getenv('BOX_PUBLIC_KEY_ID'),
+    rsa_private_key_data=PRIVATE_KEY,
+    rsa_private_key_passphrase=os.getenv('BOX_PASSPHRASE')
 )
 MEDIA_FOLDER_NAME = 'quermi-media'
 client = Client(CREDENTIALS_FILE_PATH)
