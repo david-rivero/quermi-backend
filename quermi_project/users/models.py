@@ -66,7 +66,8 @@ class QuermiProfileUser(models.Model):
     profile_status = models.JSONField(max_length=ML_MAX_LENGTH, default=dict)
 
     def __str__(self):
-        return 'Profile {st_name} {last_name} - pk: {pk}'.format(
+        return 'Profile {role} - {st_name} {last_name} - pk: {pk}'.format(
+            role=self.role,
             st_name=self.user.first_name,
             last_name=self.user.last_name,
             pk=self.pk

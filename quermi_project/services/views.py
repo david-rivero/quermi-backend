@@ -1,6 +1,8 @@
 from django_filters import rest_framework as filters
 from rest_framework.generics import (
-    ListAPIView, ListCreateAPIView, CreateAPIView)
+    ListAPIView, ListCreateAPIView,
+    CreateAPIView, RetrieveUpdateDestroyAPIView
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,6 +31,15 @@ class ContractCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated,]
     queryset = Contract.objects.all()
     serializer_class = ContractWriteSerializer
+
+class ContractDetailView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTTokenUserAuthentication,]
+    permission_classes = [IsAuthenticated,]
+    serializer_class = ContractWriteSerializer
+
+    def get_queryset(self):
+        id_profile = self.kwargs.get('pk') or None
+        return Contract.objects.filter(pk=id_profile)
 
 class ReportListCreateView(ListCreateAPIView):
     authentication_classes = [JWTTokenUserAuthentication,]

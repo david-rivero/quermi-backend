@@ -22,7 +22,8 @@ class ContractReadOnlySerializer(serializers.ModelSerializer):
             'end_date',
             'status',
             'patient',
-            'care_person'
+            'care_person',
+            'pk'
         ]
 
 

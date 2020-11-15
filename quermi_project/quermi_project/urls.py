@@ -10,6 +10,7 @@ from services.views import (
     ContractListView,
     ContractCreateView,
     ReportListCreateView,
+    ContractDetailView,
     ChatRoomView
 )
 from users.views import (
@@ -29,6 +30,9 @@ urlpatterns = [
     path(
         'api/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
+    path(
+        'api/contracts/<int:pk>/',
+        ContractDetailView.as_view(), name='contract_detail'),
     path('api/contracts/create',
         ContractCreateView.as_view(), name='contracts_create'),
     re_path(r'^api/contracts', ContractListView.as_view(), name='contracts'),
