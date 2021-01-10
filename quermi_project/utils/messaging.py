@@ -126,12 +126,6 @@ class ChatConsumer(WebsocketConsumer):
         DumbMessageModel.save_message(
             message, self.from_profile, self.to_profile)
 
-        # TODO: Update automatic response behavior
-        response_message = DumbMessageModel.get_automatic_response(message)
-        self.send_chat_message(response_message)
-        DumbMessageModel.save_message(
-            response_message, self.to_profile, self.from_profile)
-
     # Receive message from room group
     def send_message(self, message):
         # Send message to WebSocket
