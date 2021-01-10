@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 
+from payments.utils import create_payment_customer
+
 MIN_VALUE_PROFILE_RATING = 0
 MAX_VALUE_PROFILE_RATING = 5
 S_MAX_LENGTH = 30
@@ -46,8 +48,6 @@ class ProfileLanguage(models.Model):
         return '{} - {}'.format(self.name, self.pk)
 
 
-# Should replace the default User model 
-# or mantain profile information in another model?
 class QuermiProfileUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.TextField(max_length=S_MAX_LENGTH, choices=QUERMI_ROLE)
@@ -62,8 +62,18 @@ class QuermiProfileUser(models.Model):
     languages = models.ManyToManyField(ProfileLanguage)
     services = models.ManyToManyField(ProfileServices)
     experience = models.CharField(max_length=L_MAX_LENGTH)
-    address = models.CharField(max_length=M_MAX_LENGTH, null=True)
+    address = models.CharField(
+        max_length=M_MAX_LENGTH, null=True, blank=True)
     profile_status = models.JSONField(max_length=ML_MAX_LENGTH, default=dict)
+    customer_payment_id = models.TextField(
+        max_length=M_MAX_LENGTH, null=True)
+    verified_profile = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.customer_payment_id:
+            customer = create_payment_customer()
+            self.customer_payment_id = customer.get('id')
+        super(QuermiProfileUser, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Profile {role} - {st_name} {last_name} - pk: {pk}'.format(

@@ -6,6 +6,11 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
+from payments.views import (
+    PaymentRegisterListView, SubscriptionModeListView,
+    CustomerSubscriptionListView, CustomerSubscriptionDetailView,
+    PaymentRegisterDetailView
+)
 from services.views import (
     ContractListView,
     ContractCreateView,
@@ -49,4 +54,14 @@ urlpatterns = [
         ProfileServicesView.as_view(), name='services'),
     path('api/chatroom/<str:from_profile>/<str:to_profile>/',
          ChatRoomView.as_view()),
+    path('api/payments/payment-register',
+         PaymentRegisterListView.as_view()),
+    path('api/payments/payment-register/<int:pk>/',
+         PaymentRegisterDetailView.as_view()),
+    path('api/payments/subscription-prices',
+         SubscriptionModeListView.as_view()),
+    path('api/payments/customer-subscriptions',
+         CustomerSubscriptionListView.as_view()),
+    path('api/payments/customer-subscriptions/<int:pk>/',
+         CustomerSubscriptionDetailView.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

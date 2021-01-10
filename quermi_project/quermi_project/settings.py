@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'channels_redis',
     'users',
     'services',
-    'utils'
+    'utils',
+    'payments'
 ]
 
 MIDDLEWARE = [
