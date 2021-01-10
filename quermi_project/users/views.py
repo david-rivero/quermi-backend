@@ -54,12 +54,8 @@ class ProfileView(ListCreateAPIView):
     filterset_fields = ['user__email', 'role']
 
     def post(self, request, *args, **kwargs):
-        id_doc_b64 = request.data.pop('id_doc_photo')
         profile_photo_b64 = request.data.pop('profile_photo')
 
-        with open(TMP_DOC_ID_PHOTO_PATH,'wb') as fx:
-            fx.write(base64.b64decode(id_doc_b64))
-            
         with open(TMP_PROFILE_PHOTO_PATH,'wb') as fy:
             fy.write(base64.b64decode(profile_photo_b64))
 
@@ -71,22 +67,16 @@ class ProfileView(ListCreateAPIView):
                 pk=profile_id)
             # first_name, last_name = response_create.data.name.split(' ')
             random_id = random.randint(1, MAX_NUM_LIM)
-            id_ph_name = '{}_{}_id_photo'.format(random_id, profile_id)
             profile_ph_name = '{}_{}_profile_photo'.format(
                 random_id, profile_id)
 
-            id_ph_ref = upload_file(
-                open(TMP_DOC_ID_PHOTO_PATH,'rb'),
-                '{}.png'.format(id_ph_name), id_ph_name)
             profile_ref = upload_file(
                 open(TMP_PROFILE_PHOTO_PATH,'rb'),
                 '{}.png'.format(profile_ph_name), profile_ph_name)
 
-            profile_user.doc_id_photo_url = id_ph_ref
             profile_user.profile_photo_url = profile_ref
             profile_user.save()
 
-            os.remove(TMP_DOC_ID_PHOTO_PATH)
             os.remove(TMP_PROFILE_PHOTO_PATH)
 
         return response_create
@@ -99,6 +89,23 @@ class ProfileDetailView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         id_profile = self.kwargs.get('pk') or None
         return QuermiProfileUser.objects.filter(pk=id_profile)
+
+    def patch(self, request, *args, **kwargs):
+        if request.data.get('id_doc_photo'):
+            id_doc_b64 = request.data.pop('id_doc_photo')
+            with open(TMP_DOC_ID_PHOTO_PATH, 'wb') as fx:
+                fx.write(base64.b64decode(id_doc_b64.get('data')))
+
+            profile_id = self.kwargs.get('pk') or None
+            random_id = random.randint(1, MAX_NUM_LIM)
+            id_ph_name = '{}_{}_id_photo'.format(
+                random_id, profile_id)
+            id_ph_ref = upload_file(
+                open(TMP_DOC_ID_PHOTO_PATH, 'rb'),
+                '{}.png'.format(id_ph_name), id_ph_name)
+            request.data['doc_id_photo_url'] = id_ph_ref
+            os.remove(TMP_DOC_ID_PHOTO_PATH)
+        return super().patch(request, *args, **kwargs)
 
 class UserView(ListCreateAPIView):
     queryset = User.objects.all()
