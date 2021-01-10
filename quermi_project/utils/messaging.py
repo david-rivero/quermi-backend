@@ -21,24 +21,9 @@ MIN_NUMBER = 22391
 LIMIT_MESSAGES = 50
 r = redis.Redis(
     charset='utf-8', decode_responses=True)
-automatic_response = {
-    'Hi': 'Hello',
-    'How are you': 'I\'m fine, thanks',
-    'Are you available': 'Yes, I\'m available that day',
-    'Bye': 'bye',
-    '__default__': 'Sorry, I cannot understand your message.'
-}
+
 
 class DumbMessageModel:
-    @staticmethod
-    def get_automatic_response(message):
-        resp_keys = list(automatic_response.keys())
-        for k in resp_keys:
-            if message.lower().find(k.lower()) != -1:
-                return automatic_response[k]
-        return automatic_response['__default__']
-
-
     @staticmethod
     def init_chat(from_profile, to_profile):
         if not r.get('chat_{}_{}'.format(from_profile, to_profile)):
@@ -125,12 +110,6 @@ class ChatConsumer(WebsocketConsumer):
     def new_message(self, message):
         DumbMessageModel.save_message(
             message, self.from_profile, self.to_profile)
-
-        # TODO: Update automatic response behavior
-        response_message = DumbMessageModel.get_automatic_response(message)
-        self.send_chat_message(response_message)
-        DumbMessageModel.save_message(
-            response_message, self.to_profile, self.from_profile)
 
     # Receive message from room group
     def send_message(self, message):
